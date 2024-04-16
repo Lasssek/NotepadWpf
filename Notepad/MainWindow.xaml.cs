@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,9 +23,11 @@ namespace Notepad
     ///
     public partial class MainWindow : Window
     {
+
         NotepadClass notepad = new NotepadClass();
-        public MainWindow()
-        {
+
+        public MainWindow() {
+
             InitializeComponent();
         }
         private void NotepadTextBoxLoaded(object sender, RoutedEventArgs e)
@@ -53,6 +55,73 @@ namespace Notepad
                 hoveredButton.Background = Brushes.White;
             }
         }
+
+        private void NewCommandHandler () {
+            notepadTextBox.Text = "";
+            notepad.SetCurrentWorkingFileName(null);
+        }
+
+        private void OpenCommandHandler () {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
+            openFileDialog.DefaultExt = ".txt";
+            if (notepad.GetCurrentWorkingDirectory() != null)
+            {
+                openFileDialog.InitialDirectory = notepad.GetCurrentWorkingDirectory();
+            }
+            else
+            {
+                openFileDialog.InitialDirectory = "C:\\";
+            }
+
+
+            Nullable<bool> openResult = openFileDialog.ShowDialog();
+
+            if (openResult == true)
+            {
+                notepadTextBox.Text = System.IO.File.ReadAllText(openFileDialog.FileName);
+
+                notepad.SetCurrentWorkingFileName(openFileDialog.FileName);
+                string directoryPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+                notepad.SetCurrentWorkingDirectory(directoryPath);
+
+            }
+
+        }
+
+        private void SaveCommandHandler () {
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
+            saveFileDialog.DefaultExt = ".txt";
+            saveFileDialog.InitialDirectory = "C:\\";
+
+            if (notepad.GetCurrentWorkingFileName() != null)
+            {
+                System.IO.File.WriteAllText(notepad.GetCurrentWorkingFileName(), notepad.textData);
+            }
+            else
+            {
+                SaveAsCommandHandler();
+            }
+        }
+
+        private void SaveAsCommandHandler() {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
+            saveFileDialog.DefaultExt = ".txt";
+            saveFileDialog.InitialDirectory = "C:\\";
+
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                notepad.SetCurrentWorkingFileName(saveFileDialog.FileName);
+                System.IO.File.WriteAllText(notepad.GetCurrentWorkingFileName(), notepad.textData);
+            }
+
+        } 
+
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
 
@@ -67,67 +136,27 @@ namespace Notepad
         }
         private void MenuItemClick(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
-            saveFileDialog.DefaultExt = ".txt";
-            saveFileDialog.InitialDirectory = "C:\\";
+            
             MenuItem item = sender as MenuItem;
 
             switch (item.Name)
             {
                 case "New":
-                    notepadTextBox.Text = "";
-                    notepad.SetCurrentWorkingFileName(null);
+                    NewCommandHandler();
 
                     break;
 
                 case "SaveAs":
-
-                    Nullable<bool> result = saveFileDialog.ShowDialog();
-
-                    if (result == true)
-                    {
-                        notepad.SetCurrentWorkingFileName(saveFileDialog.FileName);
-                        System.IO.File.WriteAllText(notepad.GetCurrentWorkingFileName(), notepad.textData);
-                    }
+                    SaveAsCommandHandler();
+                    
                     break;
 
                 case "Save":
-                    if (notepad.GetCurrentWorkingFileName() != null)
-                    {
-                        System.IO.File.WriteAllText(notepad.GetCurrentWorkingFileName(), notepad.textData);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Nieudano sie zapisac stworz nowy plik aby zapisywac dane");
-                    }
+                    SaveCommandHandler();
                     break;
 
                 case "Open":
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
-                    openFileDialog.DefaultExt = ".txt";
-                    if (notepad.GetCurrentWorkingDirectory() != null)
-                    {
-                        openFileDialog.InitialDirectory = notepad.GetCurrentWorkingDirectory();
-                    }
-                    else
-                    {
-                        openFileDialog.InitialDirectory = "C:\\";
-                    }
-                    
-
-                    Nullable<bool> openResult = openFileDialog.ShowDialog();
-
-                    if (openResult == true)
-                    {
-                        notepadTextBox.Text = System.IO.File.ReadAllText(openFileDialog.FileName);
-
-                        notepad.SetCurrentWorkingFileName(openFileDialog.FileName);
-                        string directoryPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
-                        notepad.SetCurrentWorkingDirectory(directoryPath);
-
-                    }
+                    OpenCommandHandler();
                     break;
             }
             
