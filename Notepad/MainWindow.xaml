@@ -5,8 +5,124 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Notepad"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Icon="public/icon.ico"
+        Title="Notatnik" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="FlatButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="BorderBrush" Value="White"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <WrapPanel Orientation="Horizontal">
+                <Button Content="Plik" Style="{StaticResource FlatButtonStyle}" Width="30px" Click="ButtonClick" MouseEnter="ButtonHover" MouseLeave="ButtonHover">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Name="New" Header="Nowy" InputGestureText="Ctrl+N" Click="MenuItemClick"></MenuItem>
+                            <MenuItem Name="NewWindow" Header="Nowe okno" InputGestureText="Ctrl+Shift+N" Click="MenuItemClick"></MenuItem>
+                            <MenuItem Name="Open" Header="Otwórz..." InputGestureText="Ctrl+O" Click="MenuItemClick"></MenuItem>
+                            <MenuItem Name="Save" Header="Zapisz" InputGestureText="Ctrl+S" Click="MenuItemClick"></MenuItem>
+                            <MenuItem Name="SaveAs" Header="Zapisz jako..." InputGestureText="Ctrl+Shift+S" Click="MenuItemClick"></MenuItem>
+                            <Separator></Separator>
+                            <MenuItem Header="Ustawienia strony..."></MenuItem>
+                            <MenuItem Name="Print" Header="Drukuj..." InputGestureText="Ctrl+P" Click="MenuItemClick"></MenuItem>
+                            <Separator></Separator>
+                            <MenuItem Name="Exit" Header="Zakończ" Click="MenuItemClick"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Content="Edycja" Style="{StaticResource FlatButtonStyle}" Width="45px" Click="ButtonClick" MouseEnter="ButtonHover" MouseLeave="ButtonHover">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Cofnij" InputGestureText="Ctrl+Z"></MenuItem>
+                            <Separator></Separator>
+                            <MenuItem Header="Wytnij" InputGestureText="Ctrl+X" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Kopiuj" InputGestureText="Ctrl+C" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Wklej" InputGestureText="Ctrl+V" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Usuń" InputGestureText="Del" IsEnabled="False"></MenuItem>
+                            <Separator></Separator>
+                            <MenuItem Header="Wyszukaj za pomocą usługi Bing..." InputGestureText="CTRL+E" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Znajdź..." InputGestureText="Ctrl+F" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Znajdź następny" InputGestureText="F3" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Znajdź poprzednie" InputGestureText="Shift+F3" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Zamień..." InputGestureText="Ctrl+H"></MenuItem>
+                            <MenuItem Header="Przejdź do..." InputGestureText="Ctrl+G"></MenuItem>
+                            <Separator></Separator>
+                            <MenuItem Header="Zaznacz wszystko" InputGestureText="Ctrl+A"></MenuItem>
+                            <MenuItem Header="Godzina/data" InputGestureText="F5"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Content="Format" Style="{StaticResource FlatButtonStyle}" Width="50px" Click="ButtonClick" MouseEnter="ButtonHover" MouseLeave="ButtonHover">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Zawijanie wierszy"></MenuItem>
+                            <MenuItem Header="Czcionka..."></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Content="Widok" Style="{StaticResource FlatButtonStyle}" Width="48px" Click="ButtonClick" MouseEnter="ButtonHover" MouseLeave="ButtonHover">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Powiększenie">
+                                <MenuItem Header="Powiększ" InputGestureText="Ctrl+Plus"></MenuItem>
+                                <MenuItem Header="Pomniejsz" InputGestureText="Ctrl+Minus"></MenuItem>
+                                <MenuItem Header="Przywróć powiększenie domyślne" InputGestureText="Ctrl+0"></MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="Pasek stanu"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Content="Pomoc" Style="{StaticResource FlatButtonStyle}" Width="50px" Click="ButtonClick" MouseEnter="ButtonHover" MouseLeave="ButtonHover">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Wyświetl Pomoc"></MenuItem>
+                            <MenuItem Header="Wyślij opinię"></MenuItem>
+                            <Separator></Separator>
+                            <MenuItem Header="Notatnik - informacje"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </WrapPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+                <TextBox x:Name="notepadTextBox" TextChanged="NotepadTextBoxChanged" Loaded="NotepadTextBoxLoaded">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TextBox}">
+                                        <Border
+                                        x:Name="border"
+                                        BorderBrush="#f0f0f0"
+                                        BorderThickness="0, 2, 0, 0"
+                                        Background="{TemplateBinding Background}"
+                                >
+                                            <ScrollViewer
+                                                  x:Name="PART_ContentHost"
+                                                  Focusable="false"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  VerticalScrollBarVisibility="Hidden">
+                                            </ScrollViewer>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
