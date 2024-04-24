@@ -15,97 +15,153 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Notepad
-{
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    ///
-    public partial class MainWindow : Window
-    {
+namespace Notepad {
+
+    public partial class MainWindow : Window {
 
         NotepadClass notepad = new NotepadClass();
 
         public MainWindow() {
 
             InitializeComponent();
-            Title = notepad.GetCurrentWorkingFileName() + " - Notatnik";
+            Title = notepad.getCurrentTextFileTitle();
             this.KeyDown += MainWindow_KeyDown;
         }
 
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                SaveCommandHandler();
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e) {
 
-                e.Handled = true;
+            switch (e.Key) {
+                case Key.S:
+                    if (Keyboard.Modifiers == ModifierKeys.Control) {
+                        SaveCommandHandler();
+
+                        e.Handled = true;
+                    }
+                    else if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        SaveAsCommandHandler();
+
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.N:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        NewCommandHandler();
+
+                        e.Handled = true;
+                    }
+                    else if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        NewWindowCommandHandler();
+
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.O:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        OpenCommandHandler();
+
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.P:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        PrintCommandHandler();
+
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.Enter:
+    
+                    
+                    int caretIndex = notepadTextBox.CaretIndex;
+
+                    notepadTextBox.Text = notepadTextBox.Text.Insert(caretIndex, "\n");
+                    notepadTextBox.CaretIndex = caretIndex + 1;
+
+                    e.Handled = true;
+                    break;
             }
         }
-        private void NotepadTextBoxLoaded(object sender, RoutedEventArgs e)
-        {
 
+        private void NotepadTextBoxLoaded (object sender, RoutedEventArgs e) {
+
+            notepadTextBox.FontSize = notepad.fontSize;
             notepadTextBox.Focus();
-            
         }
 
-        private void NotepadTextBoxChanged(object sender, RoutedEventArgs e)
-        {
+        private void NotepadTextBoxChanged (object sender, RoutedEventArgs e) {
+
             notepad.textData = notepadTextBox.Text;
-            if (!notepad.isSaved)
-            {
-                Title = "*" + notepad.GetCurrentWorkingFileName() + " - Notatnik";
+            if (notepad.textData != notepad.getDataBufferBeforeSaved()) {
+
+                Title = "*" + notepad.getCurrentTextFileTitle();
+            }
+            else {
+
+                Title = notepad.getCurrentTextFileTitle();
             }
         }
 
-        private void ButtonHover(object sender, MouseEventArgs e)
-        {
+        private void ButtonHover (object sender, MouseEventArgs e) {
 
             Button hoveredButton = sender as Button;
 
-            Color color = (Color)ColorConverter.ConvertFromString("#e5f3ff");
-            SolidColorBrush brush = new SolidColorBrush(color);
+            SolidColorBrush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e5f3ff"));
 
-            if (e.RoutedEvent == Mouse.MouseEnterEvent)
-            {
-
+            if (e.RoutedEvent == Mouse.MouseEnterEvent) {
+            
                 hoveredButton.Background = brush;
             }
-            else if (e.RoutedEvent == Mouse.MouseLeaveEvent)
-            {
+            else if (e.RoutedEvent == Mouse.MouseLeaveEvent) {
 
                 hoveredButton.Background = Brushes.White;
             }
         }
 
+        private void ButtonClick(object sender, RoutedEventArgs e) {
+
+            Button clickedButton = sender as Button;
+            clickedButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e8f2fa"));
+            clickedButton.ContextMenu.IsOpen = true;
+
+        }
+
         private void NewCommandHandler () {
+
             notepadTextBox.Text = "";
-            notepad.SetCurrentWorkingFileName(null);
+            notepad.SetCurrentWorkingFileName("Bez tytułu");
+            notepad.setDataBufferBeforeSaved("");
+            Title = notepad.getCurrentTextFileTitle();
+
         }
 
         private void OpenCommandHandler () {
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
             openFileDialog.DefaultExt = ".txt";
-            if (notepad.GetCurrentWorkingDirectory() != null)
-            {
+
+            if (notepad.GetCurrentWorkingDirectory() != null) {
+
                 openFileDialog.InitialDirectory = notepad.GetCurrentWorkingDirectory();
             }
-            else
-            {
+            else {
+
                 openFileDialog.InitialDirectory = "C:\\";
             }
 
             Nullable<bool> openResult = openFileDialog.ShowDialog();
 
-            if (openResult == true)
-            {
+            if (openResult == true) {
+
                 notepadTextBox.Text = System.IO.File.ReadAllText(openFileDialog.FileName);
                 notepad.SetCurrentWorkingFileName(System.IO.Path.GetFileName(openFileDialog.FileName));
-                Title = "*" + notepad.GetCurrentWorkingFileName() + " - Notatnik";
+                Title = notepad.getCurrentTextFileTitle();
 
-                string directoryPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
-                notepad.SetCurrentWorkingDirectory(directoryPath);
+                notepad.SetCurrentWorkingDirectory(openFileDialog.FileName);
+                notepad.setDataBufferBeforeSaved(notepadTextBox.Text);
 
             }
 
@@ -118,18 +174,20 @@ namespace Notepad
             saveFileDialog.DefaultExt = ".txt";
             saveFileDialog.InitialDirectory = "C:\\";
 
-            if (notepad.GetCurrentWorkingFileName() != null)
-            {
-                System.IO.File.WriteAllText(notepad.GetCurrentWorkingFileName(), notepad.textData);
-                Title = notepad.GetCurrentWorkingFileName() + " - Notatnik";
+            if (notepad.GetCurrentWorkingDirectory() != null) {
+
+                System.IO.File.WriteAllText(notepad.GetCurrentWorkingDirectory(), notepad.textData);
+                Title = notepad.getCurrentTextFileTitle();
+                notepad.setDataBufferBeforeSaved(notepadTextBox.Text);
             }
-            else
-            {
+            else {
+
                 SaveAsCommandHandler();
             }
         }
 
         private void SaveAsCommandHandler() {
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*|HTML Files (*.html)|*.html";
             saveFileDialog.DefaultExt = ".txt";
@@ -137,24 +195,27 @@ namespace Notepad
 
             Nullable<bool> result = saveFileDialog.ShowDialog();
 
-            if (result == true)
-            {
+            if (result == true) {
+
+                notepad.SetCurrentWorkingDirectory(saveFileDialog.FileName);
                 notepad.SetCurrentWorkingFileName(System.IO.Path.GetFileName(saveFileDialog.FileName));
-                System.IO.File.WriteAllText(notepad.GetCurrentWorkingFileName(), notepad.textData);
+                System.IO.File.WriteAllText(notepad.GetCurrentWorkingDirectory(), notepad.textData);
+                notepad.setDataBufferBeforeSaved(notepadTextBox.Text);
+                Title = notepad.getCurrentTextFileTitle();
             }
 
         } 
 
-        private void PrintCommandHandler()
-        {
+        private void PrintCommandHandler () {
+
             FlowDocument flowDocument = new FlowDocument();
             Paragraph paragraph = new Paragraph(new Run(notepad.textData));
             flowDocument.Blocks.Add(paragraph);
 
             PrintDialog printDialog = new PrintDialog();
 
-            if (printDialog.ShowDialog() == true)
-            {
+            if (printDialog.ShowDialog() == true) {
+
                 flowDocument.PageHeight = printDialog.PrintableAreaHeight;
                 flowDocument.PageWidth = printDialog.PrintableAreaWidth;
 
@@ -167,61 +228,79 @@ namespace Notepad
             }
         }
 
-        private void ExitCommandHandler()
-        {
+        private void ExitCommandHandler () {
+
             Environment.Exit(0);
         }
 
-        private void NewWindowCommandHandler()
-        {
+        private void NewWindowCommandHandler () {
+
             MainWindow newWindow = new MainWindow();
             newWindow.Show();
         }
 
-        private void ButtonClick(object sender, RoutedEventArgs e)
-        {
+        private void TextWrapCommandHandler (MenuItem item) {
 
-            Button clickedButton = sender as Button;
-            clickedButton.ContextMenu.IsOpen = true;
-
+            if (item.IsChecked) {
+                item.IsChecked = false;
+                notepadScroll.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Visible);
+                notepadTextBox.TextWrapping = TextWrapping.NoWrap;
+            }
+            else {
+                item.IsChecked = true;
+                notepadScroll.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
+                notepadTextBox.TextWrapping = TextWrapping.Wrap;
+            }
+            
         }
         
-        private void MenuItemClick(object sender, RoutedEventArgs e)
-        {
+        private void MenuItemClick (object sender, RoutedEventArgs e) {
             
             MenuItem item = sender as MenuItem;
 
-            switch (item.Name)
-            {
-                case "New":
-                    NewCommandHandler();
+            switch (item.Name) {
 
+                case "New":
+
+                    NewCommandHandler();
                     break;
 
                 case "SaveAs":
+
                     SaveAsCommandHandler();
-                    
                     break;
 
                 case "Save":
+
                     SaveCommandHandler();
                     break;
 
                 case "Open":
+
                     OpenCommandHandler();
                     break;
+
                 case "Print":
+
                     PrintCommandHandler();
                     break;
+
                 case "Exit":
+
                     ExitCommandHandler();
                     break;
+
                 case "NewWindow":
+
                     NewWindowCommandHandler();
                     break;
+
+                case "TextWrap":
+
+                    TextWrapCommandHandler(item);
+                    break;
+
             }
-            
-            
         }
     }
 }

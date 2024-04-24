@@ -1,0 +1,15 @@
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\bin\Release\Notepad.exe.config
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\bin\Release\Notepad.exe
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\bin\Release\Notepad.pdb
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.csproj.AssemblyReference.cache
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\MainWindow.g.cs
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\App.g.cs
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad_MarkupCompile.cache
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad_MarkupCompile.lref
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\MainWindow.baml
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.g.resources
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.Properties.Resources.resources
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.csproj.GenerateResource.cache
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.csproj.CoreCompileInputs.cache
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.exe
+C:\Users\Maro\Desktop\NotepadWpf\Notepad\obj\Release\Notepad.pdb

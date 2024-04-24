@@ -66,7 +66,7 @@
                 <Button Content="Format" Style="{StaticResource FlatButtonStyle}" Width="50px" Click="ButtonClick" MouseEnter="ButtonHover" MouseLeave="ButtonHover">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Zawijanie wierszy"></MenuItem>
+                            <MenuItem Name="TextWrap" Header="Zawijanie wierszy" Click="MenuItemClick"></MenuItem>
                             <MenuItem Header="Czcionka..."></MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
@@ -96,7 +96,7 @@
             </WrapPanel>
         </Grid>
         <Grid Grid.Row="1">
-            <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            <ScrollViewer Name="notepadScroll" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
                 <TextBox x:Name="notepadTextBox" TextChanged="NotepadTextBoxChanged" Loaded="NotepadTextBoxLoaded">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -104,16 +104,15 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TextBox}">
                                         <Border
-                                        x:Name="border"
-                                        BorderBrush="#f0f0f0"
-                                        BorderThickness="0, 2, 0, 0"
-                                        Background="{TemplateBinding Background}"
-                                >
+                                            x:Name="border"
+                                            BorderBrush="#f0f0f0"
+                                            BorderThickness="0, 2, 0, 0"
+                                            Background="{TemplateBinding Background}">
                                             <ScrollViewer
-                                                  x:Name="PART_ContentHost"
-                                                  Focusable="false"
-                                                  HorizontalScrollBarVisibility="Hidden"
-                                                  VerticalScrollBarVisibility="Hidden">
+                                            x:Name="PART_ContentHost"
+                                            Focusable="false"
+                                            HorizontalScrollBarVisibility="Disabled"
+                                            VerticalScrollBarVisibility="Disabled">
                                             </ScrollViewer>
                                         </Border>
                                     </ControlTemplate>
@@ -122,6 +121,7 @@
                         </Style>
                     </TextBox.Style>
                 </TextBox>
+
             </ScrollViewer>
         </Grid>
     </Grid>

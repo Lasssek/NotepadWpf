@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("public/forbidden.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("public/checkbox.ico")]
 
 

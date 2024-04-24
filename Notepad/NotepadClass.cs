@@ -2,66 +2,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Notepad
-{
-    class NotepadClass
-    {
-        public NotepadClass()
-        {
+namespace Notepad {
 
-        }
+    class NotepadClass {
 
-        private string[] supportedFileExtensions;
+        public NotepadClass() { }
 
         private string currentWorkingFileName = "Bez Tytułu";
-        private string currentWorkingDirectory;
+        private string currentWorkingDirectory = null;
+        public double fontSize = 16;
+        public string textData = "";
+        private string textDataBufferBeforeSaved = "";
 
-        public string GetCurrentWorkingDirectory()
-        {
-            return this.currentWorkingFileName;
+        public string GetCurrentWorkingDirectory() {
+
+            return this.currentWorkingDirectory;
         }
-        public void SetCurrentWorkingDirectory(string currentWorkingDirectory)
-        {
+
+        public void SetCurrentWorkingDirectory(string currentWorkingDirectory) {
+
             this.currentWorkingDirectory = currentWorkingDirectory;
         }
 
+        public void setDataBufferBeforeSaved (string dataBuffer) {
 
-        public string textData = "";
-        public bool isSaved;
-        private string textFileTitle;
+            this.textDataBufferBeforeSaved = dataBuffer;
+        }
 
-        public string getCurrentTextFileTitle ()
-        {
-            string title = this.textFileTitle + " - Notatnik";
+        public string getDataBufferBeforeSaved () {
+
+            return this.textDataBufferBeforeSaved;
+        }
+
+        public string getCurrentTextFileTitle () {
+
+            string title = this.currentWorkingFileName + " - Notatnik";
             return title;
         }
 
+        public string GetCurrentWorkingFileName() {
 
-        public string GetCurrentWorkingFileName()
-        {
             return this.currentWorkingFileName;
         }
-        public void SetCurrentWorkingFileName(string currentWorkingFileName)
-        {
+
+        public void SetCurrentWorkingFileName(string currentWorkingFileName) {
+
             this.currentWorkingFileName = currentWorkingFileName;
-        }
-
-        public string[] GetSupportedFileExtenstions()
-        {
-            return this.supportedFileExtensions;
-        }
-
-        public void AddSupportedFileExtension(string fileExtension)
-        {
-            this.supportedFileExtensions.Append<string>(fileExtension);
-        }
-
-        public void SetSupportedFileExtentions(string[] fileExtensions)
-        {
-            this.supportedFileExtensions = fileExtensions;
         }
     }
 }
